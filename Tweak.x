@@ -334,6 +334,13 @@ static void batchSwizzlingOnClass(Class cls, NSArray<NSString*>*origSelectors, I
         }
     }
     
+    // New Google Native Ads
+    if ([BHTManager HidePromoted] && 
+        ([_orig isKindOfClass:NSClassFromString(@"T1TwitterSwift.GoogleNativeAdCell")] || 
+         [class_name isEqualToString:@"T1TwitterSwift.GoogleNativeAdCell"])) {
+        return nil;
+    }
+    
     return _orig;
 }
 - (double)tableView:(id)arg1 heightForRowAtIndexPath:(id)arg2 {
@@ -404,6 +411,11 @@ static void batchSwizzlingOnClass(Class cls, NSArray<NSString*>*origSelectors, I
         }
     }
     
+    if ([BHTManager HidePromoted] && 
+        [class_name isEqualToString:@"T1TwitterSwift.GoogleNativeAdCell"]) {
+        return 0;
+    }
+    
     return %orig;
 }
 - (double)tableView:(id)arg1 heightForHeaderInSection:(long long)arg2 {
@@ -420,50 +432,6 @@ static void batchSwizzlingOnClass(Class cls, NSArray<NSString*>*origSelectors, I
 %hook TFNTwitterStatus
 - (_Bool)isCardHidden {
     return ([BHTManager HidePromoted] && [self isPromoted]) ? true : %orig;
-}
-%end
-
-// Hide new Google Native Ads in Home timeline
-%hook THFHomeTimelineItemsViewController
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (!tableView || !indexPath) return nil;
-    
-    @try {
-        UITableViewCell *cell = %orig;
-        if (!cell) return nil;
-        
-        if ([BHTManager HidePromoted] && 
-            [NSStringFromClass([cell class]) isEqualToString:@"T1TwitterSwift.GoogleNativeAdCell"]) {
-            return nil;  // 0 can crash the app so using nil instead
-        }
-        
-        return cell;
-    }
-    @catch (NSException *e) {
-        return nil;
-    }
-}
-%end
-
-// Hide new Google Native Ads in Conversation timeline
-%hook T1ConversationContainerViewController
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (!tableView || !indexPath) return nil;
-    
-    @try {
-        UITableViewCell *cell = %orig;
-        if (!cell) return nil;
-        
-        if ([BHTManager HidePromoted] && 
-            [NSStringFromClass([cell class]) isEqualToString:@"T1TwitterSwift.GoogleNativeAdCell"]) {
-            return nil; // 0 can crash the app so using nil instead
-        }
-        
-        return cell;
-    }
-    @catch (NSException *e) {
-        return nil;
-    }
 }
 %end
 
