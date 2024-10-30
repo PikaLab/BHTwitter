@@ -43,8 +43,8 @@ static void batchSwizzlingOnClass(Class cls, NSArray<NSString*>*origSelectors, I
 %hook T1AppDelegate
 - (_Bool)application:(UIApplication *)application didFinishLaunchingWithOptions:(id)arg2 {
     %orig;
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstRun_4.3"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"1strun" forKey:@"FirstRun_4.3"];
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstRun_4.4"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@"1strun" forKey:@"FirstRun_4.4"];
         [[NSUserDefaults standardUserDefaults] setBool:true forKey:@"dw_v"];
         [[NSUserDefaults standardUserDefaults] setBool:true forKey:@"hide_promoted"];
         [[NSUserDefaults standardUserDefaults] setBool:true forKey:@"voice"];
@@ -334,11 +334,11 @@ static void batchSwizzlingOnClass(Class cls, NSArray<NSString*>*origSelectors, I
         }
     }
     
-    // New Google Native Ads
+    // New Google Native Ads 
     if ([BHTManager HidePromoted] && 
         ([_orig isKindOfClass:NSClassFromString(@"T1TwitterSwift.GoogleNativeAdCell")] || 
          [class_name isEqualToString:@"T1TwitterSwift.GoogleNativeAdCell"])) {
-        return nil;
+        [_orig setHidden:YES];
     }
     
     return _orig;
@@ -413,7 +413,7 @@ static void batchSwizzlingOnClass(Class cls, NSArray<NSString*>*origSelectors, I
     
     if ([BHTManager HidePromoted] && 
         [class_name isEqualToString:@"T1TwitterSwift.GoogleNativeAdCell"]) {
-        return 0;
+        return 0.0f;
     }
     
     return %orig;
